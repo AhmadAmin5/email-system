@@ -1,0 +1,23 @@
+{
+  "name": "email-system",
+  "version": "1.0.0",
+  "description": "A simple implementation of SMTP for Email System for Computer Networking Lab",
+  "keywords": [
+    "SMTP"
+  ],
+  "homepage": "https://github.com/AhmadAmin5/email-system#readme",
+  "bugs": {
+    "url": "https://github.com/AhmadAmin5/email-system/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AhmadAmin5/email-system.git"
+  },
+  "license": "ISC",
+  "author": "M Ahmad Amin",
+  "type": "module",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

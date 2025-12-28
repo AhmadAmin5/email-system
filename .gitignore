@@ -1,0 +1,11 @@
+node_modules/
+
+data/users.json
+data/mails.json
+
+
+.env
+#(if added later)
+
+.vscode/
+
