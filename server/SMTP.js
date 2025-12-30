@@ -193,9 +193,9 @@ export default net.createServer(socket => {
         }
     });
 
-    socket.on('error', () => console.log(chalk.red.bold('\nSMTP client disconnected unexpectedly\n========================')));
+    socket.on('error', () => console.log(chalk.red.bold(`\nSMTP client ${socket.remotePort} disconnected unexpectedly\n========================`)));
 
-    socket.on('close', () => console.log(chalk.yellow.bold('\nSMTP client closed connection\n========================')));
+    socket.on('close', () => console.log(chalk.yellow.bold(`\nSMTP client ${socket.remotePort} closed connection\n========================`)));
 
 
     // Helpers

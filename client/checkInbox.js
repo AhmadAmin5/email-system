@@ -2,11 +2,17 @@ import net from 'net';
 import chalk from 'chalk';
 import { ask, printHeader, holdScreen } from './input.js';
 
-const checkInbox = async (user) => {
+const checkInbox = async (user, boxType = 'INBOX') => {
     return new Promise((resolveMain) => {
         const socket = net.createConnection(parseInt(process.env.POP3_PORT), process.env.POP3_HOST);
         
         let responseHandler = null;
+
+        // Determine labels and commands based on box type
+        const isSentBox = boxType === 'SENT';
+        const listCommand = isSentBox ? 'LIST_SENT' : 'LIST';
+        const boxTitle = isSentBox ? `Sent Emails: ${user.email}` : `Inbox: ${user.email}`;
+        const peerHeader = isSentBox ? "To (Recipient)" : "From (Sender)";
 
         socket.on('data', (data) => {
             if (responseHandler) responseHandler(data);
@@ -60,32 +66,34 @@ const checkInbox = async (user) => {
                 await sendRequest(`USER ${user.email}`);
                 await sendRequest(`PASS ${user.password}`);
 
-                // Inbox Loop
+                // Mailbox Loop
                 while (true) {
-                    printHeader(`Inbox: ${user.email}`);
+                    printHeader(boxTitle);
                     
-                    const listRaw = await sendRequest('LIST', true);
+                    const listRaw = await sendRequest(listCommand, true);
                     const lines = listRaw.split('\r\n').filter(l => l.trim() !== '' && l.trim() !== '.');
                     
                     if (lines[0].startsWith('+OK')) {
                         const msgs = lines.slice(1);
                         if (msgs.length === 0) {
-                            console.log(chalk.gray("   (Inbox is empty)"));
+                            console.log(chalk.gray(`   (${isSentBox ? 'Sent box' : 'Inbox'} is empty)`));
                         } else {
                             // Table Header
-                            console.log(chalk.bold.yellow(pad("ID", 6) + pad("Sender", 35) + "Date"));
+                            console.log(chalk.bold.yellow(pad("ID", 6) + pad(peerHeader, 35) + "Date"));
                             console.log(chalk.dim(pad("-", 6, '-') + pad("-", 35, '-') + "-----------------------"));
                             
                             msgs.forEach(m => {
                                 const parts = m.split('|');
                                 if (parts.length >= 3) {
                                     const id = parts[0];
-                                    const sender = parts[1];
+                                    const peer = parts[1]; // This is 'From' or 'To' based on server response
                                     const date = new Date(parts[2]).toLocaleString();
-                                    console.log(pad(id, 6) + pad(sender, 35) + date);
+                                    console.log(pad(id, 6) + pad(peer, 35) + date);
                                 }
                             });
                         }
+                    } else {
+                         console.log(chalk.red("Server Response: " + lines[0]));
                     }
 
                     console.log(chalk.dim("\n------------------------------------------------"));
@@ -105,6 +113,8 @@ const checkInbox = async (user) => {
                         break;
                     } 
                     else if (cmd === 'd' && arg) {
+                        // NOTE: Ensure your backend DELE command knows which box you are in
+                        // if it uses index-based deletion.
                         const res = await sendRequest(`DELE ${arg}`);
                         console.log(chalk.red("\n" + res.trim()));
                         await holdScreen();
@@ -142,7 +152,7 @@ const checkInbox = async (user) => {
                     }
                 }
             } catch (e) {
-                console.error(chalk.red("\nError in Inbox:"), e.message);
+                console.error(chalk.red("\nError in Mailbox:"), e.message);
                 await holdScreen();
                 socket.end();
                 resolveMain();

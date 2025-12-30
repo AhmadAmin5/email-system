@@ -28,6 +28,18 @@ export const listMails = async (email) => {
     }
 };
 
+// List mails sent BY a user
+export const listSentMails = async (email) => {
+    try {
+        // Query matches 'from' instead of 'to'
+        const mails = await Mail.find({ from: email, deleted: false }).sort({ createdAt: -1 });
+        return mails;
+    } catch (err) {
+        console.error('listSentMails error:', err);
+        return [];
+    }
+};
+
 // Read a single mail by ID
 export const readMail = async (id) => {
     try {
