@@ -6,6 +6,7 @@ import sendEmail from './sendEmail.js';
 import checkInbox from './checkInbox.js';
 import { ask, printHeader, holdScreen } from "./input.js";
 import { createTunnel } from './sshTunnel.js';
+import fs from 'fs';
 
 const main = (async () => {
     
@@ -23,7 +24,8 @@ const main = (async () => {
             host: process.env.SSH_HOST,
             port: parseInt(process.env.SSH_PORT || 22),
             username: process.env.SSH_USER,
-            password: process.env.SSH_PASS
+            password: process.env.SSH_PASS,
+            privateKey: fs.readFileSync(process.env.SSH_KEY_PATH)
         };
 
         try {
@@ -73,7 +75,7 @@ const main = (async () => {
     }
 
     // --- Main Application Loop ---
-    while (true) {
+    while (option!=3) {
         try {
             const user = await login();
             if(!user) break;
