@@ -73,6 +73,7 @@ const main = (async () => {
     while (true) {
         try {
             const user = await login();
+            if(!user) break;
             var option = 0
             while (option != 3) {
                 printHeader(`Dashboard: ${user.email}`);
@@ -80,8 +81,7 @@ const main = (async () => {
                 console.log(chalk.yellow("Select an action:\n"));
                 console.log(chalk.white(" 1) ") + chalk.bold("Compose an email"));
                 console.log(chalk.white(" 2) ") + chalk.bold("Check Inbox"));
-                console.log(chalk.white(" 3) ") + chalk.red("Log out"));
-                console.log(""); 
+                console.log(chalk.white(" 3) ") + chalk.redBright("Log out\n"));
 
                 option = await ask(chalk.blue("Choose your option: "));
                 

@@ -4,15 +4,18 @@ import { ask, askHidden, askWithValidation, printHeader, holdScreen } from './in
 import { isValidEmail, isValidPassword } from './validations.js';
 
 const login = async () => {
-    while (true) {
+    var option = 0;
+
+    while (option != 3) {
         printHeader("Welcome to Email System");
 
         console.log(chalk.green("Please identify yourself:\n"));
         console.log(chalk.white(" 1) ") + chalk.bold("Login"));
         console.log(chalk.white(" 2) ") + chalk.bold("Register"));
+        console.log(chalk.white(" 3) ") + chalk.redBright("Exit"));
         console.log("");
 
-        const option = await ask(chalk.blue("Choose your option: "));
+        option = await ask(chalk.blue("Choose your option: "));
 
         if (option == "1") {
             try {
@@ -30,6 +33,8 @@ const login = async () => {
                 console.log(chalk.red("\n✖ Registration failed."));
                 await holdScreen();
             }
+        } else if (option == "3") {
+            return null;
         } else {
             console.log(chalk.red("\n  ✖ Invalid option."));
             await new Promise(r => setTimeout(r, 1000));

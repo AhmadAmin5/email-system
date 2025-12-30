@@ -11,7 +11,7 @@ export default net.createServer(socket => {
     // Helper to send response and log it
     const send = (code, msg) => {
         const payload = `${code} ${msg}`;
-        console.log(chalk.blue.bold('Server: ') + payload);
+        console.log(chalk.blue.bold('SMTP Server: ') + payload);
         socket.write(payload + '\r\n');
     };
 
@@ -44,13 +44,13 @@ export default net.createServer(socket => {
             if (line.trim() === '' && session.state !== 'Dt') continue;
 
             if (session.state !== 'Dt') {
-                console.log(chalk.green('Client: ') + line.trim());
+                console.log(chalk.green('SMTP Client: ') + line.trim());
             }
 
             // --- DATA MODE ---
             if (session.state === 'Dt') {
                 // Log the data line being received
-                console.log(chalk.green('Client (Data): ') + line);
+                console.log(chalk.green('SMTP Client (Data): ') + line);
 
                 if (line.trim() === '.') {
                     // End of DATA
