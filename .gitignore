@@ -1,11 +1,7 @@
 node_modules/
 
-data/users.json
-data/mails.json
-
+mail-server-key.pem
 
 .env
-#(if added later)
 
 .vscode/
-

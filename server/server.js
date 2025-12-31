@@ -1,11 +1,14 @@
 import dotenv from "dotenv";
+
+dotenv.config();
+
+
 import chalk from "chalk";
 import connectDB from "./db/index.js";
 import smtpServer from "./SMTP.js"
 import pop3Server from "./POP3.js"
 import authServer from "./AuthServer.js"
 
-dotenv.config();
 console.clear();
 console.log(chalk.bold.cyan("<-----   Mail Server System   ----->\n\n"))
 await connectDB();
